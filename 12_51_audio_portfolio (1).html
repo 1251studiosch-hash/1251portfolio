@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12:51 Audio | Diseño de Sonido & Música para Videojuegos Indie</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        studio: {
+                            bg: '#0B0D12',
+                            card: '#131722',
+                            border: '#1E2433',
+                            accent: '#F97316', // Warm Amber/Orange
+                            lime: '#A3E635',
+                            cyan: '#38BDF8',
+                            muted: '#94A3B8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0B0D12;
+            color: #E2E8F0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(19, 23, 34, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .glass-panel-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel-hover:hover {
+            border-color: rgba(249, 115, 22, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -10px rgba(249, 115, 22, 0.15);
+        }
+
+        .bg-grid {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(1.08); }
+        }
+        .glow-ambient {
+            animation: pulseGlow 8s ease-in-out infinite;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0D12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E2433;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #F97316;
+        }
+
+        .wave-bar {
+            transition: height 0.15s ease, background-color 0.2s ease;
+        }
+    </style>
+</head>
+<body class="bg-studio-bg text-slate-200 antialiased selection:bg-studio-accent selection:text-black">
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-studio-border/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand / Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-studio-accent to-amber-600 flex items-center justify-center font-mono font-bold text-black text-xs shadow-md shadow-studio-accent/20 transition-transform group-hover:scale-105">
+                        12:51
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight text-white group-hover:text-studio-accent transition-colors">12:51 Audio</span>
+                        <span class="block text-[10px] text-studio-muted font-mono uppercase tracking-widest -mt-1">Indie Sound Lab</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-8 text-xs font-medium text-slate-300">
+                    <a href="#servicios" class="hover:text-studio-accent transition-colors">Especialidades</a>
+                    <a href="#player" class="hover:text-studio-accent transition-colors">Audio Player & Demos</a>
+                    <a href="#proyectos" class="hover:text-studio-accent transition-colors">Próximos Asset Packs</a>
+                    <a href="#sobre-mi" class="hover:text-studio-accent transition-colors">Sobre Mí</a>
+                    <a href="#lufs-calc" class="hover:text-studio-accent transition-colors">Calculadora LUFS</a>
+                </nav>
+
+                <!-- Header CTA Button -->
+                <div class="flex items-center gap-3">
+                    <a href="#contacto" class="px-4 py-2 rounded-lg bg-studio-accent/10 border border-studio-accent/40 text-studio-accent font-semibold text-xs hover:bg-studio-accent hover:text-black transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-paper-plane text-[11px]"></i>
+                        <span>Contactar</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-400 hover:text-white" aria-label="Abrir Menú">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-b border-studio-border px-4 pt-3 pb-6 space-y-3 font-medium text-sm">
+            <a href="#servicios" class="block text-slate-300 hover:text-studio-accent py-1.5">Especialidades</a>
+            <a href="#player" class="block text-slate-300 hover:text-studio-accent py-1.5">Audio Player & Demos</a>
+            <a href="#proyectos" class="block text-slate-300 hover:text-studio-accent py-1.5">Próximos Asset Packs</a>
+            <a href="#sobre-mi" class="block text-slate-300 hover:text-studio-accent py-1.5">Sobre Mí</a>
+            <a href="#lufs-calc" class="block text-slate-300 hover:text-studio-accent py-1.5">Calculadora LUFS</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-28 pb-16 md:pt-40 md:pb-28 bg-grid overflow-hidden">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] bg-studio-accent/15 rounded-full blur-[130px] pointer-events-none glow-ambient"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border-studio-accent/30 text-xs font-mono text-slate-300 mb-6">
+                <span class="w-2 h-2 rounded-full bg-studio-lime animate-pulse"></span>
+                <span>Construyendo catálogo para Unity Asset Store & Proyectos Indie</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6">
+                Diseño de sonido & música con alma para <br class="hidden sm:inline"/>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-studio-accent via-amber-300 to-studio-lime">
+                    videojuegos independientes
+                </span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base leading-relaxed mb-8">
+                ¡Hola! Soy el creador detrás de <strong class="text-slate-200">12:51 Audio</strong>. Trabajo como sound designer y compositor independiente, creando Foley auténtico, efectos orgánicos, paisajes sonoros y música adaptativa optimizada para Unity.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <a href="#player" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-studio-accent text-black font-bold text-xs uppercase tracking-wider hover:bg-amber-400 transition-all shadow-lg shadow-studio-accent/20 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-headphones text-sm"></i>
+                    <span>Escuchar Demos de Audio</span>
+                </a>
+                <a href="#proyectos" class="w-full sm:w-auto px-6 py-3.5 rounded-xl glass-panel text-slate-300 font-semibold text-xs hover:text-white hover:border-slate-600 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-unity text-studio-lime text-base"></i>
+                    <span>Próximos Asset Packs</span>
+                </a>
+            </div>
+
+            <div class="mt-12 flex flex-wrap justify-center items-center gap-6 text-xs font-mono text-studio-muted pt-8 border-t border-studio-border/50">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check text-studio-lime"></i> Foley Personalizado</span>
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check text-studio-lime"></i> Mezcla en LUFS Estándar</span>
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check text-studio-lime"></i> Preparado para Unity Audio Engine</span>
+                <span class="flex items-center gap-2"><i class="fa-solid fa-check text-studio-lime"></i> Archivos Loopables & WAV/MP3</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Specialities Section -->
+    <section id="servicios" class="py-16 relative border-t border-studio-border/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-studio-accent font-mono text-xs uppercase tracking-widest font-semibold">Lo que hago</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Especialidades en Audio para Juegos</h2>
+                <p class="text-slate-400 text-xs sm:text-sm mt-2">Atención al detalle en cada capa de frecuencia, pensado exclusivamente para mejorar la inmersión del jugador.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="glass-panel p-6 rounded-2xl glass-panel-hover flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-studio-accent/10 border border-studio-accent/30 text-studio-accent flex items-center justify-center text-lg mb-4">
+                            <i class="fa-solid fa-microphone-lines"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Foley & Efectos Orgánicos</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            Grabación e ingeniería de pasos, ropa, colisiones de objetos, criaturas y elementos interactivos reales.
+                        </p>
+                    </div>
+                    <ul class="text-[11px] font-mono text-slate-300 space-y-1.5 pt-3 border-t border-studio-border/60">
+                        <li><i class="fa-solid fa-angle-right text-studio-accent mr-1"></i> Variaciones de textura</li>
+                        <li><i class="fa-solid fa-angle-right text-studio-accent mr-1"></i> Multi-surface footstep sets</li>
+                    </ul>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-panel p-6 rounded-2xl glass-panel-hover flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-studio-lime/10 border border-studio-lime/30 text-studio-lime flex items-center justify-center text-lg mb-4">
+                            <i class="fa-solid fa-music"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Composición & BSO</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            Música original adaptable por capas (horizontal / vertical) para acompañar la narrativa y acción del gameplay.
+                        </p>
+                    </div>
+                    <ul class="text-[11px] font-mono text-slate-300 space-y-1.5 pt-3 border-t border-studio-border/60">
+                        <li><i class="fa-solid fa-angle-right text-studio-lime mr-1"></i> Seamless Loops perfectos</li>
+                        <li><i class="fa-solid fa-angle-right text-studio-lime mr-1"></i> Temas de combate y ambiente</li>
+                    </ul>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-panel p-6 rounded-2xl glass-panel-hover flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-studio-cyan/10 border border-studio-cyan/30 text-studio-cyan flex items-center justify-center text-lg mb-4">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Diseño SFX a Medida</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            Sintesis y procesado creativo para UI, habilidades mágicas, armas de sci-fi y sonidos de entorno retro o moderno.
+                        </p>
+                    </div>
+                    <ul class="text-[11px] font-mono text-slate-300 space-y-1.5 pt-3 border-t border-studio-border/60">
+                        <li><i class="fa-solid fa-angle-right text-studio-cyan mr-1"></i> UI & Feedback auditivo</li>
+                        <li><i class="fa-solid fa-angle-right text-studio-cyan mr-1"></i> Identidad sonora única</li>
+                    </ul>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="glass-panel p-6 rounded-2xl glass-panel-hover flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center text-lg mb-4">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Mezcla & Mastering LUFS</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            Calibración de volumen e integración de rangos dinámicos acordes a las exigencias de PC, Consolas y Mobile.
+                        </p>
+                    </div>
+                    <ul class="text-[11px] font-mono text-slate-300 space-y-1.5 pt-3 border-t border-studio-border/60">
+                        <li><i class="fa-solid fa-angle-right text-purple-400 mr-1"></i> Control de picos True-Peak</li>
+                        <li><i class="fa-solid fa-angle-right text-purple-400 mr-1"></i> Limpieza de frecuencias</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Audio Player Section -->
+    <section id="player" class="py-16 relative bg-black/40 border-t border-studio-border/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="text-studio-accent font-mono text-xs uppercase tracking-widest font-semibold">Demostración interactiva</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Audio Player de tu Portafolio</h2>
+                <p class="text-slate-400 text-xs sm:text-sm mt-2">
+                    Este reproductor carga directamente los archivos de tu carpeta <code class="text-studio-accent bg-studio-accent/10 px-1 py-0.5 rounded">/audio</code>.
+                </p>
+            </div>
+
+            <!-- Onboarding Info Banner for files -->
+            <div class="max-w-4xl mx-auto mb-6 p-4 rounded-2xl glass-panel border-studio-cyan/30 text-xs font-mono text-slate-300 flex items-start gap-3">
+                <i class="fa-solid fa-folder-open text-studio-cyan text-base mt-0.5"></i>
+                <div>
+                    <strong class="text-white block mb-0.5">Cómo subir tus pistas de audio:</strong>
+                    Crea una carpeta llamada <code class="text-studio-cyan">audio</code> al lado de este archivo HTML e incluye tus archivos de sonido (`foley-pasos.mp3`, `retro-loop.mp3`, etc.).
+                </div>
+            </div>
+
+            <!-- Main Interactive Player Card -->
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-4xl mx-auto border border-studio-border">
+                
+                <!-- Category Filter Pills -->
+                <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
+                    <button class="audio-cat-btn active px-4 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all bg-studio-accent text-black" data-cat="all">Todos los Clips</button>
+                    <button class="audio-cat-btn px-4 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all glass-panel text-slate-300 hover:text-white" data-cat="foley">Foley & Pasos</button>
+                    <button class="audio-cat-btn px-4 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all glass-panel text-slate-300 hover:text-white" data-cat="music">Música & Synth</button>
+                    <button class="audio-cat-btn px-4 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all glass-panel text-slate-300 hover:text-white" data-cat="sfx">UI & Magia SFX</button>
+                </div>
+
+                <!-- Hidden HTML5 Audio Element -->
+                <audio id="main-audio-element" preload="metadata"></audio>
+
+                <!-- Display Screen / Waveform Visualizer -->
+                <div class="bg-slate-950 p-6 rounded-2xl border border-studio-border/80 mb-6 flex flex-col justify-between min-h-[160px] relative overflow-hidden">
+                    
+                    <!-- Track Header Info -->
+                    <div class="flex items-center justify-between z-10">
+                        <div>
+                            <span id="player-category-tag" class="text-[10px] font-mono uppercase text-studio-accent bg-studio-accent/10 px-2 py-0.5 rounded border border-studio-accent/30">Foley / Pasos</span>
+                            <h4 id="player-track-title" class="text-base sm:text-lg font-bold text-white mt-1">1. Foley: Grava y Piedras</h4>
+                        </div>
+                        <div class="text-right font-mono text-xs text-studio-muted">
+                            <span id="player-timer">00:00</span> / <span id="player-duration">00:00</span>
+                        </div>
+                    </div>
+
+                    <!-- Waveform Bar Canvas / Animated Graphics -->
+                    <div id="waveform-container" class="flex items-end justify-between gap-1 h-16 my-4 z-10 px-2 cursor-pointer">
+                        <!-- Bars dynamically added by JavaScript -->
+                    </div>
+
+                    <!-- Audio Progress Seeking Bar -->
+                    <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden mb-2 cursor-pointer" id="seek-bar-container">
+                        <div id="seek-bar-fill" class="bg-studio-accent h-full w-0 transition-all duration-100"></div>
+                    </div>
+
+                    <!-- Audio Parameters Bar -->
+                    <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-slate-900 pt-3 z-10">
+                        <span>Archivo: <strong id="player-file-path" class="text-slate-200">audio/foley-pasos.mp3</strong></span>
+                        <span>LUFS Peak: <strong id="player-lufs-val" class="text-studio-lime">-14.2 LUFS</strong></span>
+                    </div>
+                </div>
+
+                <!-- Control Bar -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    
+                    <!-- Playback Controls -->
+                    <div class="flex items-center gap-4">
+                        <button id="prev-track-btn" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-backward-step text-sm"></i>
+                        </button>
+                        <button id="play-pause-btn" class="w-14 h-14 rounded-2xl bg-studio-accent text-black font-bold hover:bg-amber-400 transition-all shadow-lg shadow-studio-accent/25 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-play ml-0.5"></i>
+                        </button>
+                        <button id="next-track-btn" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-forward-step text-sm"></i>
+                        </button>
+                    </div>
+
+                    <!-- Playlist Selector Dropdown -->
+                    <div class="w-full sm:w-auto flex-1 max-w-xs">
+                        <select id="track-select" class="w-full bg-slate-950 border border-studio-border rounded-xl px-3 py-2 text-xs text-slate-200 font-mono focus:border-studio-accent focus:outline-none">
+                            <option value="0" data-cat="foley">1. Pasos: Grava y Piedras (Foley)</option>
+                            <option value="1" data-cat="music">2. Chiptune / Retro Game Loop</option>
+                            <option value="2" data-cat="sfx">3. UI Clicks & Game Over Stabs</option>
+                            <option value="3" data-cat="foley">4. Armadura de Cuero & Movimiento</option>
+                            <option value="4" data-cat="music">5. Ambience: Dark Sci-Fi Drone</option>
+                        </select>
+                    </div>
+
+                    <!-- Volume Slider -->
+                    <div class="flex items-center gap-2 font-mono text-xs text-slate-400 w-full sm:w-auto justify-end">
+                        <i class="fa-solid fa-volume-high text-xs text-studio-accent"></i>
+                        <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.8" class="w-24 accent-studio-accent bg-slate-800 rounded-lg cursor-pointer">
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon & Unity Asset Store Section -->
+    <section id="proyectos" class="py-16 relative border-t border-studio-border/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="text-studio-lime font-mono text-xs uppercase tracking-widest font-semibold">Unity Asset Store & Proyectos</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Lanzamientos en Camino</h2>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1">Actualmente estoy empaquetando y catalogando mis primeros packs oficiales.</p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg glass-panel text-xs font-mono text-studio-lime border border-studio-lime/30">
+                        <i class="fa-solid fa-clock text-xs animate-spin"></i> En Desarrollo Activo
+                    </span>
+                </div>
+            </div>
+
+            <!-- Future Asset Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Pack 1 -->
+                <div class="glass-panel rounded-2xl p-6 border border-studio-border flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-studio-accent/10 rounded-full blur-2xl group-hover:bg-studio-accent/20 transition-all"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded bg-studio-accent/10 text-studio-accent font-mono text-[10px] uppercase font-bold border border-studio-accent/30">Asset Pack #01</span>
+                            <span class="text-[11px] font-mono text-slate-400">Próximamente</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Essential Indie Foley Kit</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            Colección modular de más de 400 sonidos de pasos (madera, tierra, metal, agua), roce de ropa y manejo de objetos de inventario.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-studio-border/60">
+                        <div class="flex items-center justify-between text-xs font-mono text-slate-300">
+                            <span>Estado: <strong class="text-studio-lime">Masterizando</strong></span>
+                            <span>Unity 6 & LTS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pack 2 -->
+                <div class="glass-panel rounded-2xl p-6 border border-studio-border flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-studio-cyan/10 rounded-full blur-2xl group-hover:bg-studio-cyan/20 transition-all"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded bg-studio-cyan/10 text-studio-cyan font-mono text-[10px] uppercase font-bold border border-studio-cyan/30">Asset Pack #02</span>
+                            <span class="text-[11px] font-mono text-slate-400">Próximamente</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Sci-Fi UI & Interface FX</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            Sonidos limpios para menús, botones, notificaciones, alertas de daño y transiciones de pantalla con estética cyberpunk y futurista.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-studio-border/60">
+                        <div class="flex items-center justify-between text-xs font-mono text-slate-300">
+                            <span>Estado: <strong class="text-studio-cyan">Edición de Samples</strong></span>
+                            <span>WAV 24-bit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pack 3 -->
+                <div class="glass-panel rounded-2xl p-6 border border-studio-border flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-studio-lime/10 rounded-full blur-2xl group-hover:bg-studio-lime/20 transition-all"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded bg-studio-lime/10 text-studio-lime font-mono text-[10px] uppercase font-bold border border-studio-lime/30">Asset Pack #03</span>
+                            <span class="text-[11px] font-mono text-slate-400">Próximamente</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Retro Arcade Adaptive Music</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            Banda sonora chiptune / synthwave dividida en stems e capas seamlessly loopables para adaptarse a la intensidad de las partidas.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-studio-border/60">
+                        <div class="flex items-center justify-between text-xs font-mono text-slate-300">
+                            <span>Estado: <strong class="text-amber-400">Componiendo Stems</strong></span>
+                            <span>Loop Ready</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="sobre-mi" class="py-16 relative bg-black/30 border-t border-studio-border/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <div class="lg:col-span-7 space-y-4">
+                    <span class="text-studio-accent font-mono text-xs uppercase tracking-widest font-semibold">Detrás de 12:51</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+                        Un proyecto independiente con pasión por el audio interactivo
+                    </h2>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        12:51 Audio nació de la necesidad de aportar diseño sonoro con verdadera personalidad a proyectos indie. No soy un estudio corporativo masivo; soy un diseñador de sonido y compositor que se involucra directamente en la visión artística de cada proyecto.
+                    </p>
+                    <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Entiendo que en un desarrollo indie cada recurso cuenta. Por eso estructuro el audio pensando en la integración dentro de Unity: nombres de archivo limpios, rangos dinámicos cuidados y archivos listos para implementar sin requerir horas de configuración previa.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 pt-4 text-xs font-mono">
+                        <div class="p-3 glass-panel rounded-xl border border-studio-border">
+                            <i class="fa-solid fa-microchip text-studio-accent mb-1 text-sm"></i>
+                            <div class="font-bold text-white">Cero Clutter</div>
+                            <div class="text-slate-400 text-[11px]">Metadatos y nombres claros</div>
+                        </div>
+                        <div class="p-3 glass-panel rounded-xl border border-studio-border">
+                            <i class="fa-solid fa-sliders text-studio-lime mb-1 text-sm"></i>
+                            <div class="font-bold text-white">LUFS Standard</div>
+                            <div class="text-slate-400 text-[11px]">Normalizado para publicación</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 glass-panel p-6 rounded-3xl border border-studio-border relative overflow-hidden">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-studio-border/80 pb-3">
+                            <span class="text-xs font-mono text-slate-400">Status del estudio</span>
+                            <span class="text-xs font-mono text-studio-lime bg-studio-lime/10 px-2 py-0.5 rounded">Disponible para Proyectos</span>
+                        </div>
+
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between font-mono">
+                                <span class="text-slate-400">DAW Principal:</span>
+                                <span class="text-white">Reaper / Ableton Live</span>
+                            </div>
+                            <div class="flex justify-between font-mono">
+                                <span class="text-slate-400">Grabación Foley:</span>
+                                <span class="text-white">Condensador / Shotgun 96kHz</span>
+                            </div>
+                            <div class="flex justify-between font-mono">
+                                <span class="text-slate-400">Integración:</span>
+                                <span class="text-white">Unity Native Audio / FMOD</span>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-studio-border/80 text-[11px] text-slate-400 italic">
+                            "El sonido no es solo adorno: es el 50% de la experiencia táctil y emocional que siente el jugador al presionar un botón."
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Tool: LUFS Reference Calculator -->
+    <section id="lufs-calc" class="py-16 relative border-t border-studio-border/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="text-studio-cyan font-mono text-xs uppercase tracking-widest font-semibold">Herramienta para Devs</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Calculadora de Estándares LUFS</h2>
+                <p class="text-slate-400 text-xs sm:text-sm mt-2">
+                    Consulta las metas de sonoridad recomendadas según la plataforma objetivo de tu juego.
+                </p>
+            </div>
+
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-3xl mx-auto border border-studio-border">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                    
+                    <div>
+                        <label class="block text-xs font-mono text-slate-300 mb-2">SELECCIONA PLATAFORMA:</label>
+                        <select id="lufs-platform-select" class="w-full bg-slate-950 border border-studio-border rounded-xl px-4 py-3 text-xs text-slate-200 font-mono focus:border-studio-cyan focus:outline-none">
+                            <option value="steam">PC / Steam / Epic Games</option>
+                            <option value="switch">Nintendo Switch (Handheld / Docked)</option>
+                            <option value="ps5">PlayStation 5 / Xbox Series X</option>
+                            <option value="mobile">iOS / Android Mobile</option>
+                        </select>
+
+                        <div class="mt-4 space-y-2 text-xs text-slate-400">
+                            <p id="lufs-desc">Rango recomendado para evitar saturación y mantener coherencia entre diálogos y SFX en PC.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 p-6 rounded-2xl border border-studio-border/80 space-y-4">
+                        <div class="flex justify-between items-center pb-2 border-b border-slate-900">
+                            <span class="text-xs font-mono text-slate-400">Target Integrado (LUFS):</span>
+                            <span id="target-lufs" class="text-lg font-mono font-bold text-studio-cyan">-16.0 Integrated</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-slate-900">
+                            <span class="text-xs font-mono text-slate-400">True Peak Máximo:</span>
+                            <span id="target-tp" class="text-sm font-mono font-bold text-studio-lime">-1.5 dBTP</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-mono text-slate-400">Rango Dinámico (LRA):</span>
+                            <span id="target-lra" class="text-sm font-mono text-slate-300">8 - 12 LU</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="py-16 relative border-t border-studio-border/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <span class="text-studio-accent font-mono text-xs uppercase tracking-widest font-semibold">¿Trabajamos juntos?</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Hablemos de tu juego</h2>
+                        <p class="text-slate-400 text-xs sm:text-sm mt-2 leading-relaxed">
+                            Si estás desarrollando un juego indie y necesitas diseño de sonido personalizado, Foley específico o una banda sonora a medida, escríbeme directamente.
+                        </p>
+                    </div>
+
+                    <div class="space-y-3 font-mono text-xs">
+                        <div class="p-3.5 glass-panel rounded-xl flex items-center gap-3 border border-studio-border">
+                            <i class="fa-solid fa-envelope text-studio-accent text-base"></i>
+                            <span class="text-slate-300">contacto@1251audio.com</span>
+                        </div>
+                        <div class="p-3.5 glass-panel rounded-xl flex items-center gap-3 border border-studio-border">
+                            <i class="fa-brands fa-discord text-studio-cyan text-base"></i>
+                            <span class="text-slate-300">1251audio_indie</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 glass-panel p-6 sm:p-8 rounded-3xl border border-studio-border">
+                    <form id="contact-form" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[11px] font-mono text-slate-300 mb-1.5">TU NOMBRE O ESTUDIO</label>
+                                <input type="text" required placeholder="Ej. Alex / Dev Studio" class="w-full bg-slate-950 border border-studio-border rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:border-studio-accent focus:outline-none transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-mono text-slate-300 mb-1.5">EMAIL DE CONTACTO</label>
+                                <input type="email" required placeholder="alex@devgame.com" class="w-full bg-slate-950 border border-studio-border rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:border-studio-accent focus:outline-none transition-colors">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-mono text-slate-300 mb-1.5">¿QUÉ TIPO DE AUDIO NECESITAS?</label>
+                            <select class="w-full bg-slate-950 border border-studio-border rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:border-studio-accent focus:outline-none transition-colors">
+                                <option>Diseño de SFX & Foley Personalizado</option>
+                                <option>Composición de Banda Sonora / Música</option>
+                                <option>Paquete Completo (SFX + Música + Mezcla)</option>
+                                <option>Consulta General sobre futuros Asset Packs</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-mono text-slate-300 mb-1.5">DETALLES DEL PROYECTO (Género, Motor, Tono...)</label>
+                            <textarea rows="4" required placeholder="Cuéntame brevemente sobre tu juego (ej. Metroidvania 2D, Pixel Art, tono oscuro...)" class="w-full bg-slate-950 border border-studio-border rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:border-studio-accent focus:outline-none transition-colors"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 rounded-xl bg-studio-accent text-black font-bold text-xs uppercase tracking-wider hover:bg-amber-400 transition-all shadow-lg shadow-studio-accent/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Enviar Mensaje</span>
+                        </button>
+                    </form>
+
+                    <div id="form-success" class="hidden mt-4 p-4 glass-panel border border-studio-lime/40 text-studio-lime text-xs font-mono rounded-xl text-center">
+                        <i class="fa-solid fa-circle-check text-sm mr-1.5"></i> ¡Mensaje enviado con éxito! Te responderé lo antes posible.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 py-10 border-t border-slate-900 text-xs font-mono text-slate-500">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-5 h-5 rounded bg-studio-accent/20 border border-studio-accent/40 text-studio-accent flex items-center justify-center text-[10px] font-bold">12</div>
+                <span>© 12:51 Audio. Proyecto personal e independiente.</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="#servicios" class="hover:text-slate-300 transition-colors">Servicios</a>
+                <a href="#player" class="hover:text-slate-300 transition-colors">Demos</a>
+                <a href="#proyectos" class="hover:text-slate-300 transition-colors">Unity Asset Store</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Engine -->
+    <script>
+        // Mobile Navigation Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+        // AUDIO TRACK LIST (Modifica aquí los nombres de tus archivos dentro de /audio)
+        const audioTracks = [
+            {
+                title: "1. Pasos: Grava y Piedras (Foley)",
+                category: "foley",
+                catLabel: "Foley / Pasos",
+                lufs: "-14.2 LUFS",
+                src: "audio/foley-pasos.mp3",
+                synthType: "noise-steps"
+            },
+            {
+                title: "2. Chiptune / Retro Game Loop",
+                category: "music",
+                catLabel: "Música / Chiptune",
+                lufs: "-12.5 LUFS",
+                src: "audio/retro-loop.mp3",
+                synthType: "synth-melody"
+            },
+            {
+                title: "3. UI Clicks & Game Over Stabs",
+                category: "sfx",
+                catLabel: "UI & Mágia SFX",
+                lufs: "-16.0 LUFS",
+                src: "audio/ui-clicks.mp3",
+                synthType: "ui-sfx"
+            },
+            {
+                title: "4. Armadura de Cuero & Movimiento",
+                category: "foley",
+                catLabel: "Foley / Cuero",
+                lufs: "-15.1 LUFS",
+                src: "audio/foley-cuero.mp3",
+                synthType: "foley-leather"
+            },
+            {
+                title: "5. Ambience: Dark Sci-Fi Drone",
+                category: "music",
+                catLabel: "Música / Ambience",
+                lufs: "-18.0 LUFS",
+                src: "audio/drone-ambient.mp3",
+                synthType: "drone"
+            }
+        ];
+
+        let currentTrackIdx = 0;
+        let isPlaying = false;
+        const audioElement = document.getElementById('main-audio-element');
+        
+        // Render Visualizer Bars
+        const waveformContainer = document.getElementById('waveform-container');
+        const totalBars = 36;
+        for (let i = 0; i < totalBars; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'wave-bar flex-1 bg-slate-800 rounded-full';
+            bar.style.height = `${Math.floor(Math.random() * 60) + 20}%`;
+            waveformContainer.appendChild(bar);
+        }
+        const waveBars = document.querySelectorAll('.wave-bar');
+
+        function animateWaveform(active) {
+            waveBars.forEach((bar) => {
+                if (active) {
+                    const h = Math.floor(Math.random() * 85) + 15;
+                    bar.style.height = `${h}%`;
+                    bar.classList.remove('bg-slate-800');
+                    bar.classList.add('bg-studio-accent');
+                } else {
+                    bar.style.height = '20%';
+                    bar.classList.remove('bg-studio-accent');
+                    bar.classList.add('bg-slate-800');
+                }
+            });
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function loadTrack(index) {
+            currentTrackIdx = index;
+            const track = audioTracks[index];
+            document.getElementById('player-track-title').innerText = track.title;
+            document.getElementById('player-category-tag').innerText = track.catLabel;
+            document.getElementById('player-file-path').innerText = track.src;
+            document.getElementById('player-lufs-val').innerText = track.lufs;
+            document.getElementById('track-select').value = index;
+
+            audioElement.src = track.src;
+            audioElement.load();
+
+            document.getElementById('player-timer').innerText = "00:00";
+            document.getElementById('seek-bar-fill').style.width = "0%";
+        }
+
+        const playBtn = document.getElementById('play-pause-btn');
+
+        function togglePlay() {
+            if (isPlaying) {
+                audioElement.pause();
+            } else {
+                audioElement.play().catch(err => {
+                    console.log("Archivo local no encontrado en /audio yet. Reproduciendo visualizador.");
+                });
+            }
+        }
+
+        audioElement.addEventListener('play', () => {
+            isPlaying = true;
+            playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        });
+
+        audioElement.addEventListener('pause', () => {
+            isPlaying = false;
+            playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
+            animateWaveform(false);
+        });
+
+        audioElement.addEventListener('timeupdate', () => {
+            if (audioElement.duration) {
+                const current = audioElement.currentTime;
+                const duration = audioElement.duration;
+                document.getElementById('player-timer').innerText = formatTime(current);
+                document.getElementById('player-duration').innerText = formatTime(duration);
+                const percent = (current / duration) * 100;
+                document.getElementById('seek-bar-fill').style.width = `${percent}%`;
+                animateWaveform(true);
+            }
+        });
+
+        audioElement.addEventListener('ended', () => {
+            isPlaying = false;
+            playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
+            animateWaveform(false);
+        });
+
+        playBtn.addEventListener('click', togglePlay);
+
+        document.getElementById('prev-track-btn').addEventListener('click', () => {
+            currentTrackIdx = (currentTrackIdx - 1 + audioTracks.length) % audioTracks.length;
+            loadTrack(currentTrackIdx);
+            if (isPlaying) audioElement.play();
+        });
+
+        document.getElementById('next-track-btn').addEventListener('click', () => {
+            currentTrackIdx = (currentTrackIdx + 1) % audioTracks.length;
+            loadTrack(currentTrackIdx);
+            if (isPlaying) audioElement.play();
+        });
+
+        document.getElementById('track-select').addEventListener('change', (e) => {
+            loadTrack(parseInt(e.target.value));
+            if (isPlaying) audioElement.play();
+        });
+
+        // Volume control
+        document.getElementById('volume-slider').addEventListener('input', (e) => {
+            audioElement.volume = e.target.value;
+        });
+
+        // Click seek bar to jump time
+        document.getElementById('seek-bar-container').addEventListener('click', (e) => {
+            if (audioElement.duration) {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const clickPos = (e.clientX - rect.left) / rect.width;
+                audioElement.currentTime = clickPos * audioElement.duration;
+            }
+        });
+
+        // Category Filter Buttons
+        const catBtns = document.querySelectorAll('.audio-cat-btn');
+        catBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                catBtns.forEach(b => {
+                    b.classList.remove('bg-studio-accent', 'text-black');
+                    b.classList.add('glass-panel', 'text-slate-300');
+                });
+                btn.classList.remove('glass-panel', 'text-slate-300');
+                btn.classList.add('bg-studio-accent', 'text-black');
+
+                const selectedCat = btn.getAttribute('data-cat');
+                if (selectedCat !== 'all') {
+                    const foundIdx = audioTracks.findIndex(t => t.category === selectedCat);
+                    if (foundIdx !== -1) loadTrack(foundIdx);
+                }
+            });
+        });
+
+        // LUFS Reference Tool Setup
+        const platformSelect = document.getElementById('lufs-platform-select');
+        const lufsData = {
+            'steam': { lufs: '-16.0 Integrated', tp: '-1.5 dBTP', lra: '8 - 12 LU', desc: 'Estándar balanceado recomendado para PC/Steam. Ofrece suficiente rango dinámico.' },
+            'switch': { lufs: '-14.0 Integrated', tp: '-1.0 dBTP', lra: '6 - 9 LU', desc: 'Optimizado para altavoces integrados de Nintendo Switch en modo portátil.' },
+            'ps5': { lufs: '-18.0 Integrated', tp: '-2.0 dBTP', lra: '10 - 14 LU', desc: 'Amplio rango dinámico ideal para audio 3D (Tempest 3D Audio) en consolas.' },
+            'mobile': { lufs: '-12.0 Integrated', tp: '-1.0 dBTP', lra: '4 - 7 LU', desc: 'Mayor nivel de volumen promedio para destacar en los altavoces de móviles.' }
+        };
+
+        platformSelect.addEventListener('change', (e) => {
+            const data = lufsData[e.target.value];
+            document.getElementById('target-lufs').innerText = data.lufs;
+            document.getElementById('target-tp').innerText = data.tp;
+            document.getElementById('target-lra').innerText = data.lra;
+            document.getElementById('lufs-desc').innerText = data.desc;
+        });
+
+        // Contact Form Fake Action
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('form-success').classList.remove('hidden');
+            this.reset();
+        });
+
+        // Init Track 0
+        loadTrack(0);
+    </script>
+</body>
+</html>
